@@ -1,0 +1,352 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>敬語テスト対策</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Zen+Kaku+Gothic+New:wght@400;500;700&family=Shippori+Mincho:wght@600;800&display=swap">
+<style>
+/* Layout: one narrow column; a name-card-like question card is the centerpiece, controls above, answers below */
+:root{
+  --bg:#f3f4f6; --surface:#ffffff; --fg:#1d2330; --muted:#5d6577; --line:#d9dce3;
+  --accent:#1f4e8c; --accent-soft:#e3ebf6; --ok:#1d7a4c; --ok-soft:#e1f2e8; --ng:#b3362b; --ng-soft:#f8e3e0; --mark:#f5d04a;
+  --display:"Shippori Mincho","Hiragino Mincho ProN","Yu Mincho",serif;
+  --body:"Zen Kaku Gothic New","Hiragino Kaku Gothic ProN","Yu Gothic",system-ui,sans-serif;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#14171d; --surface:#1d2129; --fg:#e8eaef; --muted:#9aa2b2; --line:#323846;
+  --accent:#7ea7e0; --accent-soft:#233149; --ok:#5cc58f; --ok-soft:#1b3328; --ng:#ee8478; --ng-soft:#3a2220; --mark:#a8892a; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#14171d; --surface:#1d2129; --fg:#e8eaef; --muted:#9aa2b2; --line:#323846;
+  --accent:#7ea7e0; --accent-soft:#233149; --ok:#5cc58f; --ok-soft:#1b3328; --ng:#ee8478; --ng-soft:#3a2220; --mark:#a8892a; color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--fg);font-family:var(--body);font-size:15px;line-height:1.7;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:24px 48px}
+.wrap{max-width:680px;margin:0 auto;display:flex;flex-direction:column;gap:20px}
+header h1{font-family:var(--display);font-weight:800;font-size:1.9rem;margin:0;line-height:1.3;text-wrap:balance}
+header p{margin:4px 0 0;color:var(--muted);font-size:.9rem}
+.controls{display:flex;flex-direction:column;gap:10px}
+.row{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.row .lbl{font-size:.75rem;color:var(--muted);letter-spacing:.08em;width:3.5em;flex-shrink:0}
+.chip{border:1px solid var(--line);background:var(--surface);color:var(--fg);border-radius:999px;padding:5px 12px;font:inherit;font-size:.85rem;cursor:pointer}
+.chip[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:var(--surface)}
+.chip:focus-visible,button:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.tabs{display:grid;grid-template-columns:repeat(3,1fr);border:1px solid var(--line);border-radius:10px;overflow:hidden;background:var(--surface)}
+.tabs button{border:0;background:none;color:var(--muted);font:inherit;font-weight:500;padding:9px 0;cursor:pointer}
+.tabs button[aria-selected="true"]{background:var(--accent-soft);color:var(--accent);font-weight:700}
+.progress{display:flex;justify-content:space-between;font-size:.82rem;color:var(--muted);font-variant-numeric:tabular-nums}
+.bar{height:4px;background:var(--line);border-radius:2px;overflow:hidden;margin-top:4px}
+.bar i{display:block;height:100%;background:var(--accent);transition:width .2s}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:6px;padding:22px 22px 20px;position:relative;box-shadow:0 1px 0 var(--line)}
+.card .src{position:absolute;top:12px;right:14px;font-size:.72rem;color:var(--muted);letter-spacing:.05em}
+.scene{font-size:.85rem;color:var(--muted);margin:0 0 6px}
+.q{font-family:var(--display);font-weight:600;font-size:1.35rem;line-height:1.6;margin:0}
+.q u{text-decoration:none;background:linear-gradient(transparent 62%,var(--mark) 62%);padding:0 2px}
+.answer-in{display:flex;gap:8px;margin-top:16px}
+.answer-in input{flex:1;min-width:0;font:inherit;font-size:1rem;padding:10px 12px;border:1px solid var(--line);border-radius:6px;background:var(--bg);color:var(--fg)}
+.btn{font:inherit;font-weight:700;border:0;border-radius:6px;padding:10px 16px;cursor:pointer;background:var(--accent);color:var(--surface)}
+.btn.ghost{background:none;color:var(--accent);border:1px solid var(--line);font-weight:500}
+.btns{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+.result{margin-top:16px;border-radius:6px;padding:14px 16px}
+.result.ok{background:var(--ok-soft)} .result.ng{background:var(--ng-soft)}
+.verdict{font-weight:700;font-size:1.05rem}
+.result.ok .verdict{color:var(--ok)} .result.ng .verdict{color:var(--ng)}
+.yours{font-size:.85rem;color:var(--muted);margin-top:2px}
+.alts{margin:8px 0 0;padding:0;list-style:none;display:flex;flex-wrap:wrap;gap:6px}
+.alts li{background:var(--surface);border:1px solid var(--line);border-radius:4px;padding:3px 10px;font-weight:500}
+.note{margin-top:8px;font-size:.85rem;color:var(--ng);font-weight:700}
+.hint{font-size:.78rem;color:var(--muted);margin-top:8px}
+/* flashcard */
+.flip{cursor:pointer;min-height:220px;display:flex;flex-direction:column;justify-content:center}
+.flip .tap{font-size:.78rem;color:var(--muted);margin-top:14px}
+.back-lbl{font-size:.75rem;color:var(--muted);letter-spacing:.08em;margin-top:14px}
+/* list */
+.list{display:flex;flex-direction:column;gap:0;background:var(--surface);border:1px solid var(--line);border-radius:6px}
+.item{padding:12px 16px;border-top:1px solid var(--line);display:grid;grid-template-columns:2.2em 1fr;gap:4px 8px}
+.item:first-child{border-top:0}
+.item .n{color:var(--muted);font-variant-numeric:tabular-nums;font-size:.85rem;padding-top:2px}
+.item .s{font-size:.78rem;color:var(--muted)}
+.item .w{font-weight:500}
+.item .w u{text-decoration:none;background:linear-gradient(transparent 62%,var(--mark) 62%)}
+.item .a{color:var(--accent);font-weight:700}
+.item .a span+span::before{content:" ／ ";color:var(--muted);font-weight:400}
+.item .weak{color:var(--ng);font-size:.72rem;font-weight:700;margin-left:6px}
+.empty{color:var(--muted);text-align:center;padding:32px 0}
+.summary{text-align:center}
+.summary .score{font-family:var(--display);font-size:2.6rem;font-weight:800;font-variant-numeric:tabular-nums}
+.toggle{display:flex;align-items:center;gap:6px;font-size:.85rem;color:var(--muted);cursor:pointer}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
+.chip,.tabs button,.btn,.flip{-webkit-tap-highlight-color:transparent;touch-action:manipulation}
+.answer-in input{font-size:16px}
+@media (max-width:600px){
+  body{padding-block:14px 32px}
+  .wrap{gap:14px}
+  header h1{font-size:1.45rem}
+  header p{font-size:.8rem}
+  .row{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;padding-bottom:2px}
+  .row::-webkit-scrollbar{display:none}
+  .chip{flex-shrink:0;min-height:38px;white-space:nowrap}
+  .toggle{flex-shrink:0;white-space:nowrap}
+  .tabs{position:sticky;top:env(safe-area-inset-top,0px);z-index:5}
+  .tabs button{min-height:46px}
+  .card{padding:16px 16px 18px}
+  .card .src{position:static;display:block;margin-bottom:2px}
+  .q{font-size:1.2rem}
+  .answer-in{flex-direction:column}
+  .answer-in input{padding:12px}
+  .btns{flex-direction:column}
+  .btn{width:100%;min-height:48px;font-size:1rem}
+  .flip{min-height:260px}
+  .item{padding:12px;grid-template-columns:1.8em 1fr}
+  .summary .score{font-size:2.2rem}
+}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <header>
+    <h1>敬語テスト対策</h1>
+    <p>ビジネスマナー ①-1〜①-5（敬語の基本）全50問 ・ 黄色マーカー部分を敬語に直す（完答）</p>
+  </header>
+
+  <div class="controls">
+    <div class="row" id="ranges"><span class="lbl">範囲</span></div>
+    <div class="row"><span class="lbl">設定</span>
+      <label class="toggle"><input type="checkbox" id="shuffle" checked> 順番をシャッフル</label>
+      <button class="chip" id="resetWeak" type="button">苦手記録をリセット</button>
+    </div>
+    <div class="tabs" role="tablist">
+      <button role="tab" data-mode="practice" aria-selected="true">入力練習</button>
+      <button role="tab" data-mode="card" aria-selected="false">暗記カード</button>
+      <button role="tab" data-mode="list" aria-selected="false">一覧</button>
+    </div>
+  </div>
+
+  <main id="view"></main>
+</div>
+
+<script>
+// q: 下線部を {} で囲む / a: 解答（並びはプリント通り。2つ目以降は別解） / note: 注意 / s: 収録プリント
+const Q = [
+ {sc:"課長に来客を知らせる", q:"課長、お客様が{来ました}", a:["おいでになりました","いらっしゃいました","おみえになりました","お越しになりました"]},
+ {sc:"お客様に課長の外出を伝える", q:"ただ今、{いません}", a:["外出しております","外出中でございます"]},
+ {sc:"お客様に呼ばれて", q:"はい、すぐに{行きます}", a:["参ります","伺います"]},
+ {sc:"お客様の居場所を聞かれて", q:"応接室に{います}", a:["いらっしゃいます"], note:"「おります」は誤り（お客様が主語なので尊敬語）"},
+ {sc:"お客様との会話を上司に報告する", q:"お客様に○○と{言いました}", a:["申し上げました","申しました"]},
+ {sc:"お客様に課長の離席を知らせる", q:"ただ今、{いません}", a:["席を外しております"]},
+ {sc:"お客様をお待たせする", q:"少々、{待っていてください}", a:["お待ちください"]},
+ {sc:"お客様に席をおすすめする", q:"そちらに{座ってください}", a:["おかけください"]},
+ {sc:"担当者の代わりに話を聞く", q:"私がお話を{聞きます}", a:["承ります","伺います"]},
+ {sc:"相手の担当者に会いに行って", q:"○○様に{会いたいのですが}", a:["お目にかかりたいのですが","お会いしたいのですが"]},
+ {sc:"自己紹介する", q:"大原商事の○○{といいます}", a:["と申します","でございます"]},
+ {sc:"お客様の要望をお断りする", q:"それは{できません}", a:["いたしかねます","できかねます"]},
+ {sc:"お客様から上司に伝言を頼まれて", q:"間違いなく{伝えます}", a:["申し伝えます"]},
+ {sc:"相手の都合を聞く", q:"ご都合は{どうですか}", a:["いかがでしょうか"]},
+ {sc:"他の人より先に退勤（退社）する", q:"{先に帰ります}", a:["お先に失礼いたします"]},
+ {sc:"書類の配布を確かめる", q:"この書類は{もらいましたか}", a:["お受け取りになりましたか"], note:"「いただきましたか」は誤り（相手の動作なので尊敬語）"},
+ {sc:"上司の外出に同行する", q:"私も{一緒に行きます}", a:["ご一緒させていただきます","ご一緒いたします","お供いたします"]},
+ {sc:"お客様と共通の知人の話になる", q:"私も○○様のことは良く{知っています}", a:["存じております","存じ上げております"]},
+ {sc:"書類を上司に提出する", q:"こちらの書類を{見てください}", a:["ご覧ください"]},
+ {sc:"相手の戻る時間を聞く", q:"○○様は何時ごろ{戻ってきますか}", a:["お戻りでしょうか","お戻りのご予定でしょうか"]},
+ {sc:"お客様の知識を誉める", q:"よく{知っていますね}", a:["ご存知ですね"]},
+ {sc:"上司に仕事を指示されて", q:"はい、すぐに{やります}", a:["いたします"]},
+ {sc:"上司から書類を渡されて", q:"{見せてもらいます}", a:["拝見いたします"]},
+ {sc:"お客様からペンを借りる", q:"{貸してもらいます}", a:["拝借いたします","お借りいたします"]},
+ {sc:"お客様にお菓子を出す", q:"どうぞ{食べてください}", a:["召し上がってください","お召し上がりください"]},
+ {sc:"お客様に商品を示して", q:"{気に入りましたか}", a:["お気に召しましたか"]},
+ {sc:"お客様に用件を聞く", q:"{何の用ですか}", a:["どのようなご用件でしょうか"]},
+ {sc:"お詫びする", q:"{本当にすみません}", a:["誠に申し訳ございません"]},
+ {sc:"相手に何かを頼む", q:"{手間をかけるけど}", a:["お手数をおかけいたしますが","お手数とは存じますが","お手数でございますが"]},
+ {sc:"商品を選んだお客様に", q:"{これでいいですか}", a:["こちらでよろしいでしょうか"]},
+ {sc:"お客様をお迎えする", q:"{待っていました}", a:["お待ちしておりました"]},
+ {sc:"困っているお客様に", q:"{どうしたんですか}", a:["どうなさいましたか","いかがなさいましたか"]},
+ {sc:"品切れの商品を求められて", q:"{ありません}", a:["ございません","ただ今、切らしております"]},
+ {sc:"お帰りになるお客様に", q:"{また来てください}", a:["またお越しください","またのお越しをお待ちしております"]},
+ {sc:"相手に何かをしてもらって", q:"{すみません}", a:["恐れ入ります","申し訳ございません","ありがとうございます"]},
+ {sc:"こちらから電話するかをたずねる", q:"こちらから{電話しますか}", a:["お電話を差し上げましょうか","お電話いたしましょうか"]},
+ {sc:"担当者の外出を伝える", q:"○○はただ今{外出しています}", a:["外出しております","外出中でございます"]},
+ {sc:"相手の電話番号を聞く", q:"電話番号を{教えてください}", a:["お聞かせ願えませんでしょうか","お聞かせいただけませんでしょうか"]},
+ {sc:"相手にお願いをする", q:"{なんとかなりませんか}", a:["ご配慮願えませんでしょうか","ご配慮いただけませんでしょうか"]},
+ {sc:"知らないことをきかれて", q:"{分かりません}", a:["分かりかねます","存じません","存じかねます"]},
+ {sc:"商談中に自分の会社のことを", q:"{うちの会社}", a:["私ども","弊社","当社"]},
+ {sc:"休暇中の同僚に電話があり", q:"○○は{休暇中です}", a:["休暇をいただいております","休暇中でございます"]},
+ {sc:"名刺を出されて受け取りながら", q:"{もらいます}", a:["頂戴いたします"]},
+ {sc:"お得意様からの電話に", q:"{いつもどうも}", a:["いつもお世話になっております"]},
+ {sc:"ドアを開けて相手を通す", q:"どうぞ{入ってください}", a:["お入りください"]},
+ {sc:"お客様に粗品を渡して", q:"こちらを{あげます}", a:["差し上げます","進呈します"]},
+ {sc:"お客様の話を上司に伝える", q:"○○様は××と{言いました}", a:["おっしゃいました"]},
+ {sc:"お客様に商品をすすめる", q:"こちらが{安いです}", a:["お得でございます"]},
+ {sc:"お客様に上司を紹介する", q:"{私どもの○○課長です}", a:["課長の○○でございます"]},
+ {sc:"電話の声が聞き取れず", q:"{もっと大きな声で話してください}", a:["お電話がすこし遠いようですが"]},
+];
+// プリントごとの出題順（Qの番号、1始まり）
+const SHEETS = {
+ "①-1":[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20],
+ "①-2":[21,22,23,24,5,25,26,8,27,28,2,29,13,30,31,32,33,34,19,35],
+ "①-3":[36,37,23,11,38,25,7,39,27,40,41,17,42,43,31,14,44,34,45,6],
+ "①-4":[46,37,44,47,35,36,1,10,48,32,9,49,42,28,3,50,22,29,4,43],
+ "①-5":[12,38,40,47,21,15,46,24,48,16,26,49,39,18,30,50,41,20,33,45],
+};
+Q.forEach((x,i)=>{x.id=i+1;x.s=Object.keys(SHEETS).filter(k=>SHEETS[k].includes(i+1))});
+
+// ---- 表記ゆれを吸収して判定 ----
+const VAR=[["申し上げ","もうしあげ"],["申し","もうし"],["申","もう"],["参り","まいり"],["伺","うかが"],["承り","うけたまわり"],
+ ["致し","いたし"],["頂戴","ちょうだい"],["頂き","いただき"],["頂け","いただけ"],["戴き","いただき"],["御座い","ござい"],["居り","おり"],
+ ["存知","ぞんじ"],["存じ","ぞんじ"],["拝見","はいけん"],["拝借","はいしゃく"],["召し上が","めしあが"],["召し","めし"],["越し","こし"],
+ ["見え","みえ"],["分かり","わかり"],["解り","わかり"],["判り","わかり"],["下さい","ください"],["出来","でき"],["宜しい","よろしい"],
+ ["恐れ入り","おそれいり"],["誠に","まことに"],["只今","ただいま"],["ただ今","ただいま"],["伝え","つたえ"],["外し","はずし"],["掛け","かけ"],
+ ["待ち","まち"],["戻り","もどり"],["予定","よてい"],["切らし","きらし"],["失礼","しつれい"],["先に","さきに"],["一緒","いっしょ"],["供","とも"],
+ ["受け取り","うけとり"],["受取り","うけとり"],["入り","いり"],["気に","きに"],["用件","ようけん"],["手数","てすう"],["世話","せわ"],
+ ["電話","でんわ"],["聞かせ","きかせ"],["願え","ねがえ"],["配慮","はいりょ"],["休暇","きゅうか"],["外出","がいしゅつ"],["私ども","わたくしども"],["私共","わたくしども"],
+ ["弊社","へいしゃ"],["当社","とうしゃ"],["差し上げ","さしあげ"],["差上げ","さしあげ"],["進呈","しんてい"],["得","とく"],["課長","かちょう"],
+ ["少し","すこし"],["遠い","とおい"],["目","め"],["会い","あい"],["借り","かり"],["有難う","ありがとう"],["訳","わけ"],["席","せき"],["何時","なんじ"],
+ ["〇","○"],["◯","○"]];
+function norm(s){
+  s=(s||"").normalize("NFKC").replace(/[\s、。,.!！?？「」『』・]/g,"");
+  for(const [k,v] of VAR) s=s.split(k).join(v);
+  return s;
+}
+function judge(input,item){
+  const n=norm(input); if(!n) return false;
+  return item.a.some(a=>n===norm(a));
+}
+
+// ---- 苦手記録（このブラウザだけに保存） ----
+let weak={};
+try{weak=JSON.parse(localStorage.getItem("keigo-weak")||"{}")}catch(e){}
+function saveWeak(){try{localStorage.setItem("keigo-weak",JSON.stringify(weak))}catch(e){}}
+
+// ---- 状態 ----
+const st={range:"all",mode:"practice",shuffle:true,deck:[],i:0,score:0,wrong:[],phase:"ask",flipped:false,lastInput:"",lastOk:false};
+const view=document.getElementById("view");
+const esc=s=>s.replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const qHtml=q=>esc(q).replace(/\{(.+?)\}/,"<u>$1</u>");
+
+function pool(){
+  if(st.range==="all") return Q.slice();
+  if(st.range==="weak") return Q.filter(x=>weak[x.id]);
+  return SHEETS[st.range].map(n=>Q[n-1]);
+}
+function newDeck(list){
+  let d=(list||pool()).slice();
+  if(st.shuffle) for(let i=d.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[d[i],d[j]]=[d[j],d[i]]}
+  Object.assign(st,{deck:d,i:0,score:0,wrong:[],phase:"ask",flipped:false});
+  render();
+}
+
+// ---- 範囲チップ ----
+const ranges=document.getElementById("ranges");
+[["all","全50問"],...Object.keys(SHEETS).map(k=>[k,k]),["weak","苦手だけ"]].forEach(([v,l])=>{
+  const b=document.createElement("button");b.className="chip";b.type="button";b.textContent=l;b.dataset.v=v;
+  b.setAttribute("aria-pressed",v===st.range);
+  b.onclick=()=>{st.range=v;ranges.querySelectorAll(".chip").forEach(c=>c.setAttribute("aria-pressed",c.dataset.v===v));newDeck()};
+  ranges.appendChild(b);
+});
+document.getElementById("shuffle").onchange=e=>{st.shuffle=e.target.checked;newDeck()};
+document.getElementById("resetWeak").onclick=e=>{
+  if(e.target.dataset.c){weak={};saveWeak();e.target.textContent="リセットしました";delete e.target.dataset.c;setTimeout(()=>e.target.textContent="苦手記録をリセット",1500);newDeck();}
+  else{e.target.dataset.c=1;e.target.textContent="もう一度押すと消去";}
+};
+document.querySelectorAll(".tabs button").forEach(b=>b.onclick=()=>{
+  st.mode=b.dataset.mode;document.querySelectorAll(".tabs button").forEach(t=>t.setAttribute("aria-selected",t===b));newDeck();
+});
+
+function progress(){
+  const n=st.deck.length,p=Math.min(st.i,n);
+  return `<div><div class="progress"><span>${p+ (st.i<n?1:0)} / ${n} 問</span><span>${st.mode==="practice"?"正解 "+st.score:"覚えた "+st.score}</span></div><div class="bar"><i style="width:${n?p/n*100:0}%"></i></div></div>`;
+}
+const srcTag=x=>`<span class="src">${x.s.join("・")}</span>`;
+
+function render(){
+  const d=st.deck;
+  if(st.mode==="list") return renderList();
+  if(!d.length){view.innerHTML=`<p class="empty">${st.range==="weak"?"苦手な問題はまだありません。<br>入力練習や暗記カードで間違えた問題がここにたまります。":"問題がありません。"}</p>`;return}
+  if(st.i>=d.length) return renderSummary();
+  st.mode==="practice"?renderPractice():renderCard();
+}
+
+function renderPractice(){
+  const x=st.deck[st.i];
+  let h=progress()+`<div class="card" style="margin-top:12px">${srcTag(x)}<p class="scene">${esc(x.sc)}</p><p class="q">${qHtml(x.q)}</p>`;
+  if(st.phase==="ask"){
+    h+=`<form class="answer-in" id="f"><input id="ans" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" enterkeyhint="done" placeholder="マーカー部分を直して入力" aria-label="解答"><button class="btn">判定</button></form>
+    <div class="btns"><button class="btn ghost" id="skip" type="button">わからない（答えを見る）</button></div>
+    <p class="hint">完答のみ正解。マーカー部分だけを、解答と同じ言葉で書いてください（ひらがな・漢字の違いは可）。</p>`;
+  }else{
+    const ok=st.lastOk;
+    h+=`<div class="result ${ok?"ok":"ng"}"><div class="verdict">${ok?"○ 正解":"× 不正解"}</div>
+      ${st.lastInput?`<div class="yours">あなたの答え：${esc(st.lastInput)}</div>`:""}
+      <ul class="alts">${x.a.map(a=>`<li>${esc(a)}</li>`).join("")}</ul>
+      ${x.a.length>1?`<p class="hint" style="margin-top:6px">どれを書いても正解（左が基本の答え）</p>`:""}
+      ${x.note?`<p class="note">⚠ ${esc(x.note)}</p>`:""}</div>
+    <div class="btns"><button class="btn" id="next" type="button">次へ</button>
+</div>`;
+  }
+  view.innerHTML=h+`</div>`;
+  if(st.phase==="ask"){
+    const inp=document.getElementById("ans");inp.focus();
+    document.getElementById("f").onsubmit=e=>{e.preventDefault();check(inp.value)};
+    document.getElementById("skip").onclick=()=>check("");
+  }else{
+    const nx=document.getElementById("next");nx.focus();nx.onclick=next;
+  }
+}
+function check(v){
+  const x=st.deck[st.i];st.lastInput=v.trim();st.lastOk=judge(v,x);
+  if(st.lastOk){st.score++; if(weak[x.id]){weak[x.id]--; if(weak[x.id]<=0) delete weak[x.id]}}
+  else{st.wrong.push(x);weak[x.id]=(weak[x.id]||0)+1}
+  saveWeak();st.phase="show";renderPractice();
+}
+function next(){st.i++;st.phase="ask";st.flipped=false;render()}
+
+function renderCard(){
+  const x=st.deck[st.i];
+  let h=progress()+`<div class="card flip" id="fc" tabindex="0" role="button" aria-label="カードをめくる" style="margin-top:12px">${srcTag(x)}
+    <p class="scene">${esc(x.sc)}</p><p class="q">${qHtml(x.q)}</p>`;
+  if(st.flipped){
+    h+=`<div class="back-lbl">答え</div><ul class="alts">${x.a.map(a=>`<li>${esc(a)}</li>`).join("")}</ul>${x.note?`<p class="note">⚠ ${esc(x.note)}</p>`:""}</div>
+    <div class="btns"><button class="btn" id="got" type="button">覚えた</button><button class="btn ghost" id="notyet" type="button">まだ（苦手に入れる）</button></div>`;
+  }else h+=`<p class="tap">タップして答えを見る</p></div>`;
+  view.innerHTML=h;
+  const fc=document.getElementById("fc");
+  if(!st.flipped){fc.onclick=()=>{st.flipped=true;renderCard()};fc.onkeydown=e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();fc.click()}};fc.focus()}
+  else{
+    document.getElementById("got").onclick=()=>{st.score++;if(weak[x.id]){weak[x.id]--;if(weak[x.id]<=0)delete weak[x.id]}saveWeak();next()};
+    document.getElementById("notyet").onclick=()=>{st.wrong.push(x);weak[x.id]=(weak[x.id]||0)+1;saveWeak();next()};
+  }
+}
+
+function renderSummary(){
+  const n=st.deck.length;
+  view.innerHTML=`<div class="card summary"><p class="scene">おつかれさまでした</p>
+   <div class="score">${st.score} / ${n}</div>
+   <p class="scene">${st.wrong.length?`間違えた・まだの問題：${st.wrong.length}問`:"全問クリア！"}</p>
+   <div class="btns" style="justify-content:center">
+    ${st.wrong.length?`<button class="btn" id="retry" type="button">間違えた問題だけもう一度</button>`:""}
+    <button class="btn ghost" id="again" type="button">最初からやり直す</button></div></div>
+   ${st.wrong.length?`<div class="list" style="margin-top:16px">${st.wrong.map(itemHtml).join("")}</div>`:""}`;
+  const r=document.getElementById("retry");if(r) r.onclick=()=>newDeck(st.wrong);
+  document.getElementById("again").onclick=()=>newDeck();
+}
+
+function itemHtml(x,i){
+  return `<div class="item"><span class="n">${x.id}</span><div style="min-width:0">
+   <div class="s">${esc(x.sc)}（${x.s.join("・")}）${weak[x.id]?`<span class="weak">苦手</span>`:""}</div>
+   <div class="w">${qHtml(x.q)}</div>
+   <div class="a">⇒ ${x.a.map(a=>`<span>${esc(a)}</span>`).join("")}</div>
+   ${x.note?`<div class="note" style="margin-top:2px">⚠ ${esc(x.note)}</div>`:""}</div></div>`;
+}
+function renderList(){
+  const p=st.range==="all"?Q:pool();
+  view.innerHTML=p.length?`<div class="list">${p.map(itemHtml).join("")}</div>`:`<p class="empty">苦手な問題はまだありません。</p>`;
+}
+
+newDeck();
+</script>
+
+</body>
+</html>
